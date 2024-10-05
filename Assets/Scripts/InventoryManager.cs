@@ -8,6 +8,8 @@ public class InventoryManager : MonoBehaviour
 
     public InventorySlot[] InventorySlots;
     public GameObject inventoryItemPrefab;
+    public GameObject worldItemPrefab;
+    public Item itemToSpawn;
 
     int selectedSlot = 0;
 
@@ -32,6 +34,15 @@ public class InventoryManager : MonoBehaviour
             if(isNumber && selectedSlot > 0 && selectedSlot <= InventorySlots.Length)
             {
                 ChangeSelectedSlot(selectedSlot - 1);
+            }
+            if(isNumber && selectedSlot is 6)
+            {
+                // Instantiate a WorldItem
+                GameObject newWorldItem = Instantiate(worldItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+
+                // Assign the item to it
+                WorldItem worldItemComponent = newWorldItem.GetComponent<WorldItem>();
+                worldItemComponent.Item = itemToSpawn;
             }
         }
     }
