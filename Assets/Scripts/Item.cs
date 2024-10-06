@@ -15,7 +15,7 @@ public class Item : ScriptableObject
     public int maxStack = 1;
 
     [Header("Both")]
-    public Sprite Image;
+    public Sprite sprite;
 
     public bool stackable => maxStack > 1;
 }

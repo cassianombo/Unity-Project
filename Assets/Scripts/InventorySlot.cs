@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public Image image;
     public Color selectedColor, notSelectedColor;
+
+    public InventoryItem InventoryItem =>
+        gameObject.transform.childCount > 0 ? gameObject.transform.GetChild(0).GetComponent<InventoryItem>() : null;
+
     [HideInInspector] public int index;
     private void Awake()
     {
@@ -48,6 +53,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 
     public void SetInventoryItem(InventoryItem item)
     {
+        //InventoryItem = item;
+
         item.gameObject.transform.SetParent(transform, false);
         item.parentAfterDrag = transform;
         item.currentSlotPos = this.index;

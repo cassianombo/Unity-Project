@@ -7,6 +7,8 @@ public class WorldItem : MonoBehaviour
     [SerializeField]public Item Item;
     private SpriteRenderer spriteRenderer;
 
+    public GameObject Owner;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -14,16 +16,7 @@ public class WorldItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spriteRenderer.sprite = Item.Image;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            InventoryManager.Instance.AddItem(Item);
-            Destroy(gameObject);
-        }
+        spriteRenderer.sprite = Item.sprite;
     }
 
 }

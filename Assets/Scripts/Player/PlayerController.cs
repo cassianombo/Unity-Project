@@ -5,7 +5,10 @@ public class PlayerController : MonoBehaviour
     #region Attributes
 
     [SerializeField] private float moveSpeed = 1f;
-    //private Inventory inventory;
+
+    public static PlayerController Instance;
+
+    public PlayerInteractionArea InteractionArea;
 
     #region Unity 
     private IAPlayer playerControls;
@@ -20,13 +23,15 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        Instance = this;
+
         playerControls = new IAPlayer();
         playerControls.Enable();
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        //inventory = new();
     }
 
     // Update is called once per frame
@@ -48,6 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         Move();
         AdjustPlayerFacingDirection();
+        DropItem();
 
         void Move()
         {
@@ -61,9 +67,27 @@ public class PlayerController : MonoBehaviour
             if (movement.x is 0)
                 return;
 
-            spriteRenderer.flipX = movement.x < 0;
+            transform.localScale = new(movement.x < 0 ? -1 : 1, 1);
+        }
+
+        void DropItem()
+        {
+            if (!(Input.GetKeyDown(KeyCode.Q) || Input.GetKey(KeyCode.Q)))
+                return;
+            InventoryItem inventoryItem = InventoryManager.Instance.GetCurrentInventoryItem();
+
+            if (inventoryItem is null)
+                return;
+
+            Item slotItem = inventoryItem.item;
+
+            GameObject newItemGo = Instantiate(InventoryManager.Instance.worldItemPrefab);
+            newItemGo.GetComponent<WorldItem>().Item = slotItem;
+            newItemGo.GetComponent<WorldItem>().Owner = this.gameObject;
+            newItemGo.transform.position = InteractionArea.transform.position;
+            
+            Destroy(inventoryItem.gameObject);
         }
     }
-
 
 }

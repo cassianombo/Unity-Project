@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,21 +31,18 @@ public class InventoryManager : MonoBehaviour
     {
         if(Input.inputString != null)
         {
+            UpdateInventory();
+        }
+
+        void UpdateInventory()
+        {
             bool isNumber = int.TryParse(Input.inputString, out int selectedSlot);
-            if(isNumber && selectedSlot > 0 && selectedSlot <= InventorySlots.Length)
+            if (isNumber && selectedSlot > 0 && selectedSlot <= InventorySlots.Length)
             {
                 ChangeSelectedSlot(selectedSlot - 1);
             }
-            if(isNumber && selectedSlot is 6)
-            {
-                // Instantiate a WorldItem
-                GameObject newWorldItem = Instantiate(worldItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-
-                // Assign the item to it
-                WorldItem worldItemComponent = newWorldItem.GetComponent<WorldItem>();
-                worldItemComponent.Item = itemToSpawn;
-            }
         }
+        
     }
 
     public bool AddItem(Item item)
@@ -61,7 +59,6 @@ public class InventoryManager : MonoBehaviour
                 itemInSlot.count++;
                 return true;
             }
-
 
             //Found empty slot
             if(itemInSlot == null)
@@ -95,16 +92,22 @@ public class InventoryManager : MonoBehaviour
     {
         GameObject newItemGo = Instantiate(inventoryItemPrefab, slot.transform);
         InventoryItem inventoryItem = newItemGo.GetComponent<InventoryItem>();
+        //slot.InventoryItem = inventoryItem;
         inventoryItem.InitialiseItem(item);
+
     }
 
     private void ChangeSelectedSlot(int newValue)
     {
-        InventorySlots[selectedSlot].Deselect();
 
+        InventorySlots[selectedSlot].Deselect();
         InventorySlots[newValue].Select();
         selectedSlot = newValue;
+
     }
 
-
+    public InventoryItem GetCurrentInventoryItem()
+    {
+        return InventorySlots[selectedSlot].InventoryItem;
+    }
 }
